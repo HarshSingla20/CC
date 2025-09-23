@@ -9,22 +9,22 @@ const knowledgeHubSchema = new mongoose.Schema({
     },
     title: {
         ml: {
-            type: "String",
+            type: String,
         },
         en: {
-            type: "String",
+            type: String,
         }
     },
     content: {
         ml: {
-            type: "String",
+            type: String,
         },
         en: {
-            type: "String",
+            type: String,
         }
     },
     type: {
-        type: "String",
+        type: String,
         enum: ["article", "scheme", "faq"],
     },
     relatedCrops: {
@@ -32,7 +32,7 @@ const knowledgeHubSchema = new mongoose.Schema({
         ref: "Crop",
     },
     sourceLink: {
-        type: "String",
+        type: String,
     }
 },{timestamps: true})
 

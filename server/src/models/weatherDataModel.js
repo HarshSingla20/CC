@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 const weatherDataSchema = new mongoose.Schema({
     location: {
         district: {
-            type: "String",
+            type: String,
         },
         coordinates: {
             type: [Number],
@@ -13,28 +13,28 @@ const weatherDataSchema = new mongoose.Schema({
         }
     },
     temprature: {
-        type: "Number",
-        required: "true",
+        type: Number,
+        required: true,
     },
     humidity:{
-        type: "Number",
+        type: Number,
     },
     rainfall: {
-        type: "Number",
+        type: Number,
     },
     windSpeed: {
-        type: "Number",
+        type: Number,
     },
     forecast: {
         description: {
-            type: "String",
+            type: String,
         },
         riskAlert: {
-            type: "String",
+            type: String,
         }
     },
     source: {
-        type: "String",
+        type: String,
     }
 }, {timestamps: true})
 
