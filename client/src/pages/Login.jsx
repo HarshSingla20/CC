@@ -2,16 +2,52 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+async function loginUser(credentials) {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    data = { message: "Server returned invalid JSON" };
+  }
+
+  if (!response.ok) throw new Error(data.message || "Login failed");
+  return data;
+}
+
 export default function LoginPage() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // TODO: add auth logic
-    console.log({ phone, password });
-    navigate("/dashboard");
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await loginUser({ phoneNumber: phone, password });
+      console.log("Login success:", data);
+
+      // Store JWT if backend returns it
+      if (data.accessToken) localStorage.setItem("token", data.accessToken);
+
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -39,8 +75,14 @@ export default function LoginPage() {
               className="mt-1 w-full px-3 py-2 bg-background rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground transition"
             />
           </div>
-          <Button type="submit" className="w-full mt-2">Login</Button>
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <Button type="submit" disabled={loading} className="w-full mt-2">
+            {loading ? "Logging in..." : "Login"}
+          </Button>
         </form>
+
         <p className="mt-4 text-sm text-muted-foreground text-center">
           Don’t have an account?{" "}
           <Link to="/signup" className="text-primary hover:underline">
