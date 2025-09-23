@@ -2,7 +2,28 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+async function signupUser(userData) {
+  const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(userData),
+  });
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    data = { message: "Server returned invalid JSON" };
+  }
+
+  if (!response.ok) throw new Error(data.message || "Signup failed");
+  return data;
+}
+
 export default function SignupPage() {
+  const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -11,12 +32,41 @@ export default function SignupPage() {
   const [district, setDistrict] = useState("");
   const [village, setVillage] = useState("");
   const [pincode, setPincode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const navigate = useNavigate();
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    console.log({ name, phone, email, password, role, district, village, pincode });
-    navigate("/dashboard");
+    setLoading(true);
+    setError(null);
+
+    // Construct payload matching backend schema
+    const payload = {
+      username,
+      name,
+      phoneNumber: phone,
+      password,
+      role,
+      location: { district, village },
+      ...(email.trim() && { email }), // only send email if provided
+      ...(pincode.trim() && { pincode }), // optional
+    };
+
+    try {
+      const data = await signupUser(payload);
+      console.log("Signup success:", data);
+
+      // If backend returns JWT or session info, handle here
+      // localStorage.setItem("token", data.token);
+
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -24,92 +74,21 @@ export default function SignupPage() {
       <div className="max-w-md w-full bg-card/95 backdrop-blur-md rounded-2xl shadow-glow p-8">
         <h2 className="text-3xl font-bold text-primary mb-6 text-center">Signup</h2>
         <form onSubmit={handleSignup} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground">Full Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="mt-1 w-full px-3 py-2 bg-background rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground transition"
-            />
-          </div>
+          <Input label="Username" value={username} onChange={setUsername} required />
+          <Input label="Full Name" value={name} onChange={setName} required />
+          <Input label="Phone Number" value={phone} onChange={setPhone} required type="tel" />
+          <Input label="Email (Optional)" value={email} onChange={setEmail} type="email" />
+          <Input label="Password" value={password} onChange={setPassword} required type="password" />
+          <Select label="Role" value={role} onChange={setRole} options={["farmer", "buyer", "expert", "admin"]} />
+          <Input label="District" value={district} onChange={setDistrict} required />
+          <Input label="Village Name" value={village} onChange={setVillage} required />
+          <Input label="Pincode (Optional)" value={pincode} onChange={setPincode} />
 
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground">Phone Number</label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-              className="mt-1 w-full px-3 py-2 bg-background rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground transition"
-            />
-          </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground">Email (Optional)</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full px-3 py-2 bg-background rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground transition"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="mt-1 w-full px-3 py-2 bg-background rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground transition"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground">Role</label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="mt-1 w-full px-3 py-2 bg-background rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground transition"
-            >
-              <option value="farmer">Farmer</option>
-              <option value="seller">Seller</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground">District</label>
-            <input
-              type="text"
-              value={district}
-              onChange={(e) => setDistrict(e.target.value)}
-              className="mt-1 w-full px-3 py-2 bg-background rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground transition"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground">Village Name</label>
-            <input
-              type="text"
-              value={village}
-              onChange={(e) => setVillage(e.target.value)}
-              className="mt-1 w-full px-3 py-2 bg-background rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground transition"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground">Pincode</label>
-            <input
-              type="text"
-              value={pincode}
-              onChange={(e) => setPincode(e.target.value)}
-              className="mt-1 w-full px-3 py-2 bg-background rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground transition"
-            />
-          </div>
-
-          <Button type="submit" className="w-full mt-2">Signup</Button>
+          <Button type="submit" disabled={loading} className="w-full mt-2">
+            {loading ? "Signing up..." : "Signup"}
+          </Button>
         </form>
 
         <p className="mt-4 text-sm text-muted-foreground text-center">
@@ -119,6 +98,42 @@ export default function SignupPage() {
           </Link>
         </p>
       </div>
+    </div>
+  );
+}
+
+// Reusable Input component
+function Input({ label, value, onChange, type = "text", required = false }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-muted-foreground">{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required={required}
+        className="mt-1 w-full px-3 py-2 bg-background rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground transition"
+      />
+    </div>
+  );
+}
+
+// Reusable Select component
+function Select({ label, value, onChange, options }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-muted-foreground">{label}</label>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full px-3 py-2 bg-background rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground transition"
+      >
+        {options.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt.charAt(0).toUpperCase() + opt.slice(1)}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
