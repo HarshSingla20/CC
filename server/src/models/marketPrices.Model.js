@@ -5,15 +5,15 @@ import bcrypt from "bcrypt";
 const marketPricesSchema = new mongoose.Schema({
     cropId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Crop",
+        ref: Crop,
     },
     mandiName: {
-        type: "String",
-        required: "true",
+        type: String,
+        required: true,
     },
     location: {
         district: {
-            type: "String",
+            type: String,
         },
         coordinates: {
             type: [Number],
@@ -21,22 +21,22 @@ const marketPricesSchema = new mongoose.Schema({
         }
     },
     minPrice: {
-        type: "Number",
-        required: "true",
+        type: Number,
+        required: true,
     },
     maxPrice: {
-        type: "Number",
-        required: "true",
+        type: Number,
+        required: true,
     },
     avgPrice: {
-        type: "Number",
-        required: "type",
+        type: Number,
+        required: type,
     },
     predictedPrice: {
-        type: "Number",
+        type: Number,
     },
     source : {
-        type: "String",
+        type: String,
     }
 
 }, {timestamps: true})

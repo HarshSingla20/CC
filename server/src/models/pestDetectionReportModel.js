@@ -12,7 +12,7 @@ const pestDetectionReportSchema = new mongoose.Schema({
         ref: "Crop",
     },
     imageUrl: {
-        type: "String",
+        type: String,
 
     },
     diagnosis: {
@@ -21,19 +21,19 @@ const pestDetectionReportSchema = new mongoose.Schema({
            ref: "PestDiseases",
         },
         confidence: {
-            type: "Number",
+            type: Number,
             deafult: "0",
             required : ["true", "Give a value between 0 and 1"],
         }
     },
     suggestedTreatments: {
-        type: "String",
+        type: String,
 
     },
     status: {
-        type: "String",
+        type: String,
         enum: ["Pending", "Completed"],
-        default: "Completed",
+        default: Completed,
     }
 
 }, {timestamps: true})

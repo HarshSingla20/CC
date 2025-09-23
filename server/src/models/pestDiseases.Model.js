@@ -9,30 +9,30 @@ const pestDiseasesSchema = new mongoose.Schema({
     },
     name: {
         ml:{
-            type: "String",
-            required: "true",
+            type: String,
+            required: true,
         },
         en:{
-            type: "String",
-            required: "true",
+            type: String,
+            required: true,
         }
     },
     symptoms: {
-        type: "String",
-        required: "true",
+        type: String,
+        required: true,
     },
     images: {
-        type: "String",
-        required: "true",
+        type: String,
+        required: true,
     },
     treatments: {
         organic: {
-            type: "String",
-            required: "true",
+            type: String,
+            required: true,
         },
         chemical: {
-            type: "String",
-            required: "true",
+            type: String,
+            required: true,
         }
     }
 }, {timestamps: "true"})
