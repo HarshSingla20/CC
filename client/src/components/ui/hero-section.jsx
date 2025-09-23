@@ -5,19 +5,19 @@ import { Link } from "react-router-dom";
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background with pattern */}
       <div className="absolute inset-0 hero-gradient pattern-dots" />
-      
+
       {/* Floating elements */}
       <div className="absolute top-20 left-10 text-primary/20 animate-float">
-        <Users className="h-16 w-16" />
+        <Users className="h-20 w-20 md:h-24 md:w-24" />
       </div>
       <div className="absolute top-32 right-20 text-secondary/20 animate-float" style={{ animationDelay: "1s" }}>
-        <TrendingUp className="h-12 w-12" />
+        <TrendingUp className="h-16 w-16 md:h-20 md:w-20" />
       </div>
       <div className="absolute bottom-20 right-10 text-accent-warm/30 animate-float" style={{ animationDelay: "2s" }}>
-        <CloudSun className="h-20 w-20" />
+        <CloudSun className="h-24 w-24 md:h-28 md:w-28" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -29,7 +29,7 @@ export function HeroSection() {
         >
           {/* Main headline */}
           <motion.h1 
-            className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -101,15 +101,15 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 1 }}
           >
             <div className="text-center">
-              <div className="text-3xl font-bold text-white">50K+</div>
+              <div className="text-3xl md:text-4xl font-bold text-white">50K+</div>
               <div className="text-white/80">Registered Farmers</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-white">200+</div>
+              <div className="text-3xl md:text-4xl font-bold text-white">200+</div>
               <div className="text-white/80">Government Schemes</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-white">Real-time</div>
+              <div className="text-3xl md:text-4xl font-bold text-white">Real-time</div>
               <div className="text-white/80">Market Updates</div>
             </div>
           </motion.div>

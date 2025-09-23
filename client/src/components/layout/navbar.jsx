@@ -43,8 +43,10 @@ export function Navbar() {
               className="p-2 rounded-lg bg-gradient-primary"
             >
               <Sprout className="h-6 w-6 text-primary-foreground" />
+              {/* <img src="icon.ico" alt="Sprout Icon" className="h-6 w-6" /> */}
+
             </motion.div>
-            <span className="text-xl font-bold text-primary">Kerala Farmers</span>
+            <span className="text-xl font-bold text-primary">NelVaani</span>
           </Link>
 
           <div className="hidden md:flex items-center space-x-1">
