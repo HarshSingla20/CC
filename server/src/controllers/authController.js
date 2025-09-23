@@ -21,7 +21,7 @@ const generateAccessAndRefreshTokens = async (_id) => {
 
 export const signup =async (req, res) => {    
     try {
-        const { username, phoneNumber, password, name } = req.body;
+        const { phoneNumber, password, name } = req.body;
         const existingUser = await User.findOne({ phoneNumber });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
@@ -30,7 +30,6 @@ export const signup =async (req, res) => {
         const user = await User.create(req.body);
 
         return res.status(201).json({
-            username: user.username,
             phoneNumber: user.phoneNumber,
             name: user.name,
             role: user.role,
