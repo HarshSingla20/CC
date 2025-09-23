@@ -5,7 +5,8 @@ import cors from "cors";
 import express from "express";
 import { connectDB } from "./src/db/connection.js";
 
-import authRoutes from "./src/routes/authRoute.js";
+import authRoute from "./src/routes/authRoute.js";
+import cropRoute from "./src/routes/cropRoute.js";
 
 dotenv.config();
 
@@ -31,7 +32,8 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoute);
+app.use("/api/crops", cropRoute);
 
 app.listen(Port, () => {
     console.log(`Server is running on http://localhost:${Port}`);

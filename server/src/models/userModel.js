@@ -48,10 +48,7 @@ const userSchema = new mongoose.Schema(
         refreshToken: {
             type: String,
         },
-        crop: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Crop",
-        }
+        crop: [{type: mongoose.Schema.Types.ObjectId,ref: "Crop",}]
     },
     {
         timestamps: true,
