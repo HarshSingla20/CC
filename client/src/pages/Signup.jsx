@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -23,7 +24,6 @@ async function signupUser(userData) {
 }
 
 export default function SignupPage() {
-  const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -36,30 +36,35 @@ export default function SignupPage() {
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
+  const { login } = useAuth(); 
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    // Construct payload matching backend schema
     const payload = {
-      username,
       name,
       phoneNumber: phone,
       password,
       role,
       location: { district, village },
-      ...(email.trim() && { email }), // only send email if provided
-      ...(pincode.trim() && { pincode }), // optional
+      ...(email.trim() && { email }),
+      ...(pincode.trim() && { pincode }),
     };
 
     try {
       const data = await signupUser(payload);
       console.log("Signup success:", data);
 
-      // If backend returns JWT or session info, handle here
-      // localStorage.setItem("token", data.token);
+      if (data.accessToken) localStorage.setItem("token", data.accessToken);
+
+      // Save user info in auth context for Navbar
+      login({ 
+        name: data.name || "User", 
+        phone: data.phoneNumber, 
+        role: data.role || "farmer" 
+      });
 
       navigate("/dashboard");
     } catch (err) {
@@ -74,7 +79,6 @@ export default function SignupPage() {
       <div className="max-w-md w-full bg-card/95 backdrop-blur-md rounded-2xl shadow-glow p-8">
         <h2 className="text-3xl font-bold text-primary mb-6 text-center">Signup</h2>
         <form onSubmit={handleSignup} className="space-y-4">
-          <Input label="Username" value={username} onChange={setUsername} required />
           <Input label="Full Name" value={name} onChange={setName} required />
           <Input label="Phone Number" value={phone} onChange={setPhone} required type="tel" />
           <Input label="Email (Optional)" value={email} onChange={setEmail} type="email" />
@@ -102,7 +106,6 @@ export default function SignupPage() {
   );
 }
 
-// Reusable Input component
 function Input({ label, value, onChange, type = "text", required = false }) {
   return (
     <div>
@@ -118,7 +121,6 @@ function Input({ label, value, onChange, type = "text", required = false }) {
   );
 }
 
-// Reusable Select component
 function Select({ label, value, onChange, options }) {
   return (
     <div>

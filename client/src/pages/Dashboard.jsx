@@ -1,17 +1,18 @@
 import { motion } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  Wallet, 
-  TrendingUp, 
-  CloudRain, 
-  Sprout, 
+import {
+  Wallet,
+  TrendingUp,
+  CloudRain,
+  Sprout,
   AlertTriangle,
   Bell,
   Calendar,
-  MapPin
+  MapPin,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/context/AuthContext.jsx";
 
 const dashboardCards = [
   {
@@ -20,7 +21,7 @@ const dashboardCards = [
     description: "Schemes you're eligible for",
     icon: Wallet,
     color: "success",
-    change: "+3 new this month"
+    change: "+3 new this month",
   },
   {
     title: "Market Price Alert",
@@ -28,7 +29,7 @@ const dashboardCards = [
     description: "Pepper - Kochi Mandi",
     icon: TrendingUp,
     color: "primary",
-    change: "+5% from yesterday"
+    change: "+5% from yesterday",
   },
   {
     title: "Weather Today",
@@ -36,7 +37,7 @@ const dashboardCards = [
     description: "Partly cloudy, 60% rain",
     icon: CloudRain,
     color: "secondary",
-    change: "Good for planting"
+    change: "Good for planting",
   },
   {
     title: "Crop Suggestions",
@@ -44,8 +45,8 @@ const dashboardCards = [
     description: "Best for current season",
     icon: Sprout,
     color: "accent",
-    change: "High demand expected"
-  }
+    change: "High demand expected",
+  },
 ];
 
 const alerts = [
@@ -53,31 +54,39 @@ const alerts = [
     type: "warning",
     title: "Heavy Rain Warning",
     message: "Expected rainfall 100mm+ in next 48 hours",
-    time: "2 hours ago"
+    time: "2 hours ago",
   },
   {
     type: "info",
     title: "New Subsidy Scheme",
     message: "Organic Farming Incentive - Applications open",
-    time: "1 day ago"
+    time: "1 day ago",
   },
   {
     type: "success",
     title: "Price Increase",
     message: "Rubber prices up by 12% this week",
-    time: "2 days ago"
-  }
+    time: "2 days ago",
+  },
 ];
 
 export default function Dashboard() {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Welcome back, Ravi</h1>
+              <h1 className="text-3xl font-bold text-foreground">
+                Welcome back, {user?.name || "Farmer"}
+              </h1>
               <p className="text-muted-foreground mt-1">
                 <MapPin className="inline h-4 w-4 mr-1" />
                 Wayanad District, Kerala
@@ -116,9 +125,15 @@ export default function Dashboard() {
                     <Icon className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-foreground mb-1">{card.value}</div>
-                    <p className="text-sm text-muted-foreground mb-2">{card.description}</p>
-                    <p className="text-xs text-success font-medium">{card.change}</p>
+                    <div className="text-2xl font-bold text-foreground mb-1">
+                      {card.value}
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {card.description}
+                    </p>
+                    <p className="text-xs text-success font-medium">
+                      {card.change}
+                    </p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -128,7 +143,12 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Recent Alerts */}
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="lg:col-span-2">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="lg:col-span-2"
+          >
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -148,17 +168,23 @@ export default function Dashboard() {
                     >
                       <div
                         className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                          alert.type === 'warning'
-                            ? 'bg-warning'
-                            : alert.type === 'success'
-                            ? 'bg-success'
-                            : 'bg-primary'
+                          alert.type === "warning"
+                            ? "bg-warning"
+                            : alert.type === "success"
+                            ? "bg-success"
+                            : "bg-primary"
                         }`}
                       />
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-foreground">{alert.title}</h4>
-                        <p className="text-sm text-muted-foreground">{alert.message}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{alert.time}</p>
+                        <h4 className="font-medium text-foreground">
+                          {alert.title}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {alert.message}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {alert.time}
+                        </p>
                       </div>
                     </motion.div>
                   ))}
@@ -168,7 +194,11 @@ export default function Dashboard() {
           </motion.div>
 
           {/* Quick Actions */}
-          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.5 }}>
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
             <Card>
               <CardHeader>
                 <CardTitle>Quick Actions</CardTitle>

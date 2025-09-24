@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -28,6 +29,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -39,8 +41,15 @@ export default function LoginPage() {
       const data = await loginUser({ phoneNumber: phone, password });
       console.log("Login success:", data);
 
-      // Store JWT if backend returns it
+      // Save JWT
       if (data.accessToken) localStorage.setItem("token", data.accessToken);
+
+      // Save full user object in context
+      login({
+        name: data.name || data.username || "User",
+        phone: data.phoneNumber,
+        role: data.role || "farmer",
+      });
 
       navigate("/dashboard");
     } catch (err) {
