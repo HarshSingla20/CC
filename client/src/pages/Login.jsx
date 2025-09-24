@@ -41,15 +41,8 @@ export default function LoginPage() {
       const data = await loginUser({ phoneNumber: phone, password });
       console.log("Login success:", data);
 
-      // Save JWT
-      if (data.accessToken) localStorage.setItem("token", data.accessToken);
-
-      // Save full user object in context
-      login({
-        name: data.name || data.username || "User",
-        phone: data.phoneNumber,
-        role: data.role || "farmer",
-      });
+      // Save full user object in context + JWT
+      login(data.user, data.accessToken);
 
       navigate("/dashboard");
     } catch (err) {

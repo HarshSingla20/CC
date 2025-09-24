@@ -64,6 +64,8 @@ export const login = async (req, res) => {
         const options = {
             httpOnly: true,
             secure: true,
+            sameSite: "none",
+            maxAge: 24 * 60 * 60 * 1000,
         };
         return res
             .status(200)
@@ -71,9 +73,14 @@ export const login = async (req, res) => {
             .cookie("refreshToken", refreshToken, options)
             .json({
                 user: {
+                    phoneNumber: user.phoneNumber,
                     name: user.name,
                     role: user.role,
-                    number: user.phoneNumber,
+                    preferredLanguage: user.preferredLanguage,
+                    location: user.location,
+                    landsize: user.landsize,
+                    crop: user.crop,
+                    _id: user._id,
                 },
                 accessToken, refreshToken, message: "User logged in successfully"
             });
@@ -100,6 +107,8 @@ export const logout = async (req, res) => {
         const options = {
             httpOnly: true,
             secure: true,
+            sameSite: "none",
+            maxAge: 24 * 60 * 60 * 1000,
         };
         return res
             .status(200)
