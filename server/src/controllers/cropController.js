@@ -132,3 +132,24 @@ export const deleteCrop = async (req, res) => {
     }
 }
 
+export const getCurrentCrop = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user.crop || user.crop.length === 0) {
+      return res.status(200).json({ message: "No crops found", crop: null });
+    }
+
+    await user.populate("crop");
+    const currentCrop = user.crop[user.crop.length - 1];
+
+    return res.status(200).json({
+      message: "Current crop fetched successfully",
+      crop: currentCrop,
+    });
+  } catch (error) {
+    console.log("Error in getCurrentCrop", error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
