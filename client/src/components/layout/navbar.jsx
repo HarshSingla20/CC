@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Sprout } from "lucide-react";
+import { Menu, X, Sprout, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { motion } from "framer-motion";
+import { useAuth } from "@/context/AuthContext.jsx";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -19,6 +20,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const isActive = (path) => location.pathname === path;
 
@@ -32,6 +34,11 @@ export function Navbar() {
     navigate("/signup");
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <nav className="bg-background/95 backdrop-blur-sm border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,8 +50,6 @@ export function Navbar() {
               className="p-2 rounded-lg bg-gradient-primary"
             >
               <Sprout className="h-6 w-6 text-primary-foreground" />
-              {/* <img src="icon.ico" alt="Sprout Icon" className="h-6 w-6" /> */}
-
             </motion.div>
             <span className="text-xl font-bold text-primary">NelVaani</span>
           </Link>
@@ -69,26 +74,32 @@ export function Navbar() {
             <LanguageToggle />
             <ThemeToggle />
 
-            <motion.div whileHover={{ scale: 1.1, rotate: 5 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Button variant="outline" size="sm" onClick={handleLogin}>
-                Login
-              </Button>
-            </motion.div>
+            {!user ? (
+              <>
+                <motion.div whileHover={{ scale: 1.1, rotate: 5 }} transition={{ type: "spring", stiffness: 300 }}>
+                  <Button variant="outline" onClick={handleLogin}>
+                    Login
+                  </Button>
+                </motion.div>
 
-            <motion.div whileHover={{ scale: 1.1, rotate: -5 }} transition={{ type: "spring", stiffness: 300 }}>
-              <Button variant="default" size="sm" onClick={handleSignup}>
-                Signup
-              </Button>
-            </motion.div>
+                <motion.div whileHover={{ scale: 1.1, rotate: -5 }} transition={{ type: "spring", stiffness: 300 }}>
+                  <Button variant="default" onClick={handleSignup}>
+                    Signup
+                  </Button>
+                </motion.div>
+              </>
+            ) : (
+              <>
+                <span className="px-3 py-2 text-sm font-medium">{user.name || "User"}</span>
+                <Button variant="destructive" className="flex items-center space-x-1" onClick={handleLogout}>
+                  <LogOut className="h-4 w-4" /> <span>Logout</span>
+                </Button>
+              </>
+            )}
           </div>
 
           <div className="md:hidden">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(!isOpen)}
-              className="focus-ring"
-            >
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className="focus-ring">
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
@@ -123,17 +134,27 @@ export function Navbar() {
                   <ThemeToggle />
                 </div>
 
-                <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300 }}>
-                  <Button variant="outline" className="w-full" onClick={handleLogin}>
-                    Login
-                  </Button>
-                </motion.div>
-
-                <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300 }}>
-                  <Button variant="default" className="w-full" onClick={handleSignup}>
-                    Signup
-                  </Button>
-                </motion.div>
+                {!user ? (
+                  <>
+                    <Button variant="outline" className="w-full" onClick={handleLogin}>
+                      Login
+                    </Button>
+                    <Button variant="default" className="w-full" onClick={handleSignup}>
+                      Signup
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    {/* <span className="px-3 py-2 text-base font-medium">{user.name || "User"}</span> */}
+                    <Button
+                      variant="destructive"
+                      className="w-full flex items-center justify-center space-x-1"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="h-4 w-4" /> <span>Logout</span>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

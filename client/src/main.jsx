@@ -8,6 +8,7 @@ import { ThemeProvider } from "next-themes";
 import { TooltipProvider } from "@/components/ui/tooltip.jsx";
 import { Toaster } from "@/components/ui/toaster.jsx";
 import { Toaster as Sonner } from "@/components/ui/sonner.jsx";
+import { AuthProvider } from "@/context/AuthContext.jsx"; // import AuthProvider
 
 const queryClient = new QueryClient();
 
@@ -16,9 +17,11 @@ createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <App />
+          <AuthProvider>
+            <Toaster />
+            <Sonner />
+            <App />
+          </AuthProvider>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
