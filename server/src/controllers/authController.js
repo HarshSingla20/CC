@@ -69,7 +69,14 @@ export const login = async (req, res) => {
             .status(200)
             .cookie("accessToken", accessToken, options)
             .cookie("refreshToken", refreshToken, options)
-            .json({ accessToken, refreshToken, message: "User logged in successfully" });
+            .json({
+                user: {
+                    name: user.name,
+                    role: user.role,
+                    number: user.phoneNumber,
+                },
+                accessToken, refreshToken, message: "User logged in successfully"
+            });
     } catch (error) {
         console.log("Error in login");
         return res.status(500).json({ message: error.message });
